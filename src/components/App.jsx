@@ -12,7 +12,10 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1 className="titulo">RolêRadar</h1>
+      <h1 className="titulo">
+        <i className="pi pi-map-marker" style={{ color: '#d32f2f', marginRight: '0.5rem' }}></i>
+        RolêRadar
+      </h1>
       <p style={estiloSubtitulo}>Descubra o que existe perto de você</p>
       <footer style={{ marginTop: '2rem', color: '#9ca3af', fontSize: '0.875rem' }}>
         RolêRadar © {obterAno()}
