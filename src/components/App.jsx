@@ -1,6 +1,8 @@
 import React from 'react'
+import Cartao from './Cartao.jsx'
 import Creditos from './Creditos.jsx'
 import Loading from './Loading.jsx'
+import MeuPonto from './MeuPonto.jsx'
 
 class App extends React.Component {
   state = {
@@ -41,7 +43,7 @@ class App extends React.Component {
   }
 
   renderizarConteudo() {
-    const { mensagemDeErro, latitude, longitude } = this.state
+    const { mensagemDeErro, latitude, longitude, horarioLocalizacao } = this.state
 
     if (mensagemDeErro) {
       return <p className="text-red-500">{mensagemDeErro}</p>
@@ -52,9 +54,14 @@ class App extends React.Component {
     }
 
     return (
-      <p>
-        Localização obtida: {latitude}, {longitude}
-      </p>
+      <Cartao cabecalho="Você está aqui">
+        <MeuPonto
+          latitude={latitude}
+          longitude={longitude}
+          horarioLocalizacao={horarioLocalizacao}
+          onAtualizar={this.obterLocalizacao}
+        />
+      </Cartao>
     )
   }
 
