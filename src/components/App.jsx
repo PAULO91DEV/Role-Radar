@@ -1,8 +1,10 @@
 import React from 'react'
+import { Button } from 'primereact/button'
 import Cartao from './Cartao.jsx'
 import Creditos from './Creditos.jsx'
 import Loading from './Loading.jsx'
 import MeuPonto from './MeuPonto.jsx'
+import geoapifyClient from '../utils/geoapifyClient.js'
 
 class App extends React.Component {
   state = {
@@ -38,6 +40,23 @@ class App extends React.Component {
     }
   }
 
+  onBuscaRealizada = async (categoria, raio) => {
+    const { latitude, longitude } = this.state
+    try {
+      const resposta = await geoapifyClient.get('/places', {
+        params: {
+          categories: categoria,
+          filter: `circle:${longitude},${latitude},${raio}`,
+          bias: `proximity:${longitude},${latitude}`,
+          limit: 20,
+        },
+      })
+      console.log(resposta.data.features)
+    } catch (erro) {
+      console.log(erro)
+    }
+  }
+
   obterAno = () => {
     return new Date().getFullYear()
   }
@@ -54,14 +73,22 @@ class App extends React.Component {
     }
 
     return (
-      <Cartao cabecalho="Você está aqui">
-        <MeuPonto
-          latitude={latitude}
-          longitude={longitude}
-          horarioLocalizacao={horarioLocalizacao}
-          onAtualizar={this.obterLocalizacao}
-        />
-      </Cartao>
+      <>
+        <Cartao cabecalho="Você está aqui">
+          <MeuPonto
+            latitude={latitude}
+            longitude={longitude}
+            horarioLocalizacao={horarioLocalizacao}
+            onAtualizar={this.obterLocalizacao}
+          />
+        </Cartao>
+        <div className="mt-2">
+          <Button
+            label="Testar busca"
+            onClick={() => this.onBuscaRealizada('catering.cafe', 1000)}
+          />
+        </div>
+      </>
     )
   }
 
