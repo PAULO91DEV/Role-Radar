@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'primereact/button'
+import Busca from './Busca.jsx'
 import Cartao from './Cartao.jsx'
 import Creditos from './Creditos.jsx'
 import Loading from './Loading.jsx'
@@ -82,12 +82,9 @@ class App extends React.Component {
             onAtualizar={this.obterLocalizacao}
           />
         </Cartao>
-        <div className="mt-2">
-          <Button
-            label="Testar busca"
-            onClick={() => this.onBuscaRealizada('catering.cafe', 1000)}
-          />
-        </div>
+        <Cartao cabecalho="O que você procura?">
+          <Busca onBuscaRealizada={this.onBuscaRealizada} />
+        </Cartao>
       </>
     )
   }
