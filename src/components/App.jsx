@@ -2,6 +2,7 @@ import React from 'react'
 import Busca from './Busca.jsx'
 import Cartao from './Cartao.jsx'
 import Creditos from './Creditos.jsx'
+import ListaLugares from './ListaLugares.jsx'
 import Loading from './Loading.jsx'
 import MeuPonto from './MeuPonto.jsx'
 import geoapifyClient from '../utils/geoapifyClient.js'
@@ -12,6 +13,7 @@ class App extends React.Component {
     longitude: null,
     horarioLocalizacao: null,
     mensagemDeErro: null,
+    lugares: null,
   }
 
   componentDidMount() {
@@ -51,7 +53,7 @@ class App extends React.Component {
           limit: 20,
         },
       })
-      console.log(resposta.data.features)
+      this.setState({ lugares: resposta.data.features })
     } catch (erro) {
       console.log(erro)
     }
@@ -59,6 +61,20 @@ class App extends React.Component {
 
   obterAno = () => {
     return new Date().getFullYear()
+  }
+
+  renderizarColunaDireita() {
+    const { lugares } = this.state
+
+    if (lugares === null) {
+      return null
+    }
+
+    if (lugares.length === 0) {
+      return <p>Nenhum lugar encontrado. Tente aumentar o raio.</p>
+    }
+
+    return <ListaLugares lugares={lugares} />
   }
 
   renderizarConteudo() {
@@ -73,19 +89,24 @@ class App extends React.Component {
     }
 
     return (
-      <>
-        <Cartao cabecalho="Você está aqui">
-          <MeuPonto
-            latitude={latitude}
-            longitude={longitude}
-            horarioLocalizacao={horarioLocalizacao}
-            onAtualizar={this.obterLocalizacao}
-          />
-        </Cartao>
-        <Cartao cabecalho="O que você procura?">
-          <Busca onBuscaRealizada={this.onBuscaRealizada} />
-        </Cartao>
-      </>
+      <div className="grid">
+        <div className="col-12 md:col-6">
+          <Cartao cabecalho="Você está aqui">
+            <MeuPonto
+              latitude={latitude}
+              longitude={longitude}
+              horarioLocalizacao={horarioLocalizacao}
+              onAtualizar={this.obterLocalizacao}
+            />
+          </Cartao>
+          <Cartao cabecalho="O que você procura?">
+            <Busca onBuscaRealizada={this.onBuscaRealizada} />
+          </Cartao>
+        </div>
+        <div className="col-12 md:col-6">
+          {this.renderizarColunaDireita()}
+        </div>
+      </div>
     )
   }
 
@@ -98,7 +119,7 @@ class App extends React.Component {
     }
 
     return (
-      <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', fontFamily: 'sans-serif' }}>
         <h1 className="titulo">
           <i className="pi pi-map-marker" style={{ color: '#d32f2f', marginRight: '0.5rem' }}></i>
           RolêRadar
